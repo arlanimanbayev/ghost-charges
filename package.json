@@ -1,0 +1,30 @@
+{
+  "name": "ghost-charges",
+  "version": "1.0.0",
+  "description": "Find forgotten subscriptions and hidden fees in a bank statement, privately, with Firebase AI Logic hybrid inference.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --dev && node scripts/serve.mjs",
+    "dev:mock": "node scripts/build.mjs --dev && MOCK=1 node scripts/serve.mjs",
+    "test": "node --test",
+    "samples": "python3 scripts/make_samples.py",
+    "deploy": "node scripts/build.mjs && npx firebase-tools deploy --only hosting"
+  },
+  "author": "Arlan Imanbayev",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "firebase": "^13.3.0",
+    "pdfjs-dist": "^6.5.438"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@fontsource/bricolage-grotesque": "^5.3.0",
+    "@fontsource/public-sans": "^5.3.0",
+    "esbuild": "^0.25.12"
+  },
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arlanimanbayev/ghost-charges"
+  }
+}

@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ghost Charges</title>
+  <meta name="description" content="Find the subscriptions you forgot and the fees you never noticed. Your statement is read in your browser; amounts never leave your device." />
+  <meta name="theme-color" content="#1c2a4a" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/styles.css?v=4a7a70b574" />
+  <script type="module" src="/app.js?v=363245d9c6"></script>
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="/">
+      <svg class="ghost-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3c-6.1 0-10.5 4.6-10.5 10.6V28l3.5-2.6 3.4 2.6 3.6-2.6 3.6 2.6 3.4-2.6 3.5 2.6V13.6C26.5 7.6 22.1 3 16 3z"/><circle cx="12" cy="14" r="2"/><circle cx="20" cy="14" r="2"/></svg>
+      Ghost Charges
+    </a>
+    <button class="device" id="device" type="button" aria-live="polite">
+      <span class="dot" aria-hidden="true"></span><span id="device-text">Checking for on-device AI</span>
+    </button>
+  </header>
+
+  <main>
+    <section class="intro" id="intro">
+      <div class="pitch">
+        <h1>Find the subscriptions you forgot and the fees you never noticed.</h1>
+        <p class="lede">Drop in a bank or card statement. Ghost Charges reads it inside your browser and shows what repeats, what quietly went up, what you pay for twice, and how to cancel it.</p>
+
+        <label class="drop" id="drop" for="file">
+          <input type="file" id="file" accept=".csv,.pdf,.txt,text/csv,application/pdf,text/plain" />
+          <span class="drop-main">Drop a statement here, or choose a file</span>
+          <span class="drop-sub">CSV or PDF from your bank or card. The file is read on this computer and never uploaded.</span>
+        </label>
+
+        <div class="samples">
+          <p>No statement handy? Try a made-up one:</p>
+          <button type="button" data-sample="checking">12 months of checking (CSV)</button>
+          <button type="button" data-sample="pdf">A 3-month statement (PDF)</button>
+          <button type="button" data-sample="card">A credit card export (CSV)</button>
+        </div>
+
+        <details class="paste">
+          <summary>Paste statement text instead</summary>
+          <textarea id="paste" rows="6" placeholder="10/14  NETFLIX.COM 866-579-7172 CA   -17.99"></textarea>
+          <button type="button" id="paste-go">Read the pasted text</button>
+        </details>
+        <p class="error" id="error" role="alert" hidden></p>
+      </div>
+
+      <aside class="promise" aria-labelledby="promise-title">
+        <h2 id="promise-title">What leaves this device</h2>
+        <dl>
+          <dt class="stays">Stays here</dt>
+          <dd>The file, every amount, date and balance, account numbers, and any question you ask about your money.</dd>
+          <dt class="cloud">May go to Google's cloud</dt>
+          <dd>Merchant names with all numbers stripped, only if Gemini Nano isn't ready on this computer. And the name of a service when you ask how to cancel it.</dd>
+        </dl>
+        <p>Each AI request is listed in the privacy ledger below your results, with where it ran.</p>
+      </aside>
+    </section>
+
+    <section class="results" id="results" hidden aria-labelledby="verdict">
+      <div class="verdict-block">
+        <p class="file-line" id="file-line"></p>
+        <h2 id="verdict"></h2>
+        <dl class="tally" id="tally"></dl>
+        <p class="naming" id="naming" aria-live="polite"></p>
+      </div>
+
+      <div class="cols">
+        <div class="report">
+          <section class="group" id="ghosts-group">
+            <h3>Worth a look</h3>
+            <ol class="ghosts" id="ghosts"></ol>
+          </section>
+          <section class="group" id="fees-group">
+            <h3>Fees</h3>
+            <ul class="fees" id="fees"></ul>
+          </section>
+          <section class="group" id="subs-group">
+            <h3>Other subscriptions</h3>
+            <ul class="rows" id="subs"></ul>
+          </section>
+          <section class="group" id="bills-group">
+            <h3>Bills and other repeating payments</h3>
+            <ul class="rows" id="bills"></ul>
+          </section>
+          <section class="group" id="stopped-group">
+            <h3>Stopped before the end of this statement</h3>
+            <ul class="rows" id="stopped"></ul>
+          </section>
+
+          <section class="ask" aria-labelledby="ask-title">
+            <h3 id="ask-title">Ask your statement</h3>
+            <p class="ask-note" id="ask-note">Answered by Gemini Nano on this computer. If it isn't available, Ghost Charges doesn't send your numbers anywhere else instead.</p>
+            <form id="ask-form">
+              <label class="visually-hidden" for="question">Your question</label>
+              <input id="question" name="question" autocomplete="off" maxlength="300" placeholder="How much do I spend on streaming a year?" />
+              <button type="submit">Ask</button>
+            </form>
+            <div class="chips" id="chips">
+              <button type="button">How much do I spend on streaming a year?</button>
+              <button type="button">Which fees could I have avoided?</button>
+              <button type="button">What are my three biggest repeating costs?</button>
+            </div>
+            <div class="answer" id="answer" aria-live="polite"></div>
+          </section>
+        </div>
+
+        <aside class="statement" aria-labelledby="statement-title">
+          <h3 id="statement-title">Your statement</h3>
+          <p class="statement-key"><span class="key-ghost">worth a look</span> <span class="key-fee">fee</span></p>
+          <div class="paper" id="paper" tabindex="0" aria-label="Transactions, newest first">
+            <table class="tx" id="tx"><tbody></tbody></table>
+          </div>
+        </aside>
+      </div>
+
+      <section class="ledger" aria-labelledby="ledger-title">
+        <h3 id="ledger-title">Privacy ledger</h3>
+        <p>Every AI request this page has made, where it ran, and what it was given. Nothing is stored after you close the tab.</p>
+        <div class="ledger-wrap">
+          <table id="ledger">
+            <thead><tr><th scope="col">Time</th><th scope="col">Job</th><th scope="col">Ran on</th><th scope="col">Sent</th><th scope="col">Kept on this device</th></tr></thead>
+            <tbody><tr class="empty"><td colspan="5">No AI requests yet.</td></tr></tbody>
+          </table>
+        </div>
+      </section>
+
+      <div class="again">
+        <button type="button" id="plan-download" class="secondary" disabled>Download my cancel plan</button>
+        <button type="button" id="restart" class="secondary">Check another statement</button>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <p>Ghost Charges points out patterns in your own statement. It isn't financial advice, and it never asks for bank logins.</p>
+    <p><a href="https://github.com/arlanimanbayev/ghost-charges">Source code</a> (Apache 2.0). Built with Firebase AI Logic hybrid inference.</p>
+  </footer>
+
+  <dialog class="kit" id="kit" aria-labelledby="kit-title">
+    <form method="dialog" class="kit-close"><button aria-label="Close">Close</button></form>
+    <h3 id="kit-title">How to cancel</h3>
+    <p class="kit-source" id="kit-source"></p>
+    <div id="kit-body"></div>
+  </dialog>
+</body>
+</html>
