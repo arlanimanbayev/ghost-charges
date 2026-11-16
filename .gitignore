@@ -1,0 +1,10 @@
+node_modules/
+.firebase/
+.DS_Store
+public/app.js
+public/chunks/
+public/*.map
+public/dev-ai.js
+public/pdf.worker.min.mjs
+public/fonts/
+public/firebase-config.local.json
